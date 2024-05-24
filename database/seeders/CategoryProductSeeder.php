@@ -20,8 +20,9 @@ class CategoryProductSeeder extends Seeder
 
         foreach ($products as $product) {
             $product->categories()->attach(
-                $categories->random(rand(1, 3))->pluck('id')->toArray()
+                $categories->random(rand(1, 4))->pluck('id')->toArray()
             );
+        }
 
     }
 }
