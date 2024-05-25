@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\qProjectResource;
 use App\Models\Product;
 
 class ProductController extends Controller
@@ -13,11 +15,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $query =Product::query();
+        $query = Product::query();
 
-        $products = $query->paginate(10);
+        $products = $query->with('categories')->paginate(10)->onEachSide(1);
         return inertia('Product/Index', [
-
+          "products" => ProductResource::collection($products)
         ]);
     }
 

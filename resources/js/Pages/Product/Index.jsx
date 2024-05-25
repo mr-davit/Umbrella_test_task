@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import {Head} from "@inertiajs/react";
 
-export default function Index ({auth}) {
+export default function Index ({auth,products}) {
  return (
   <AuthenticatedLayout
 
@@ -10,6 +10,10 @@ export default function Index ({auth}) {
    >
    <Head title="Projects" />
 
+
+   <div>
+    <pre>{JSON.stringify(products,undefined,2)}</pre>
+   </div>
   </AuthenticatedLayout>
 
   );
