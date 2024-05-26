@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
-use App\Http\Resources\qProjectResource;
+use App\Models\Category;
 use App\Models\Product;
 
 class ProductController extends Controller
@@ -17,9 +18,26 @@ class ProductController extends Controller
     {
         $query = Product::query();
 
-        $products = $query->with('categories')->paginate(10)->onEachSide(1);
+        $sortField = request("sort_field", 'id');
+        $sortDirection = request("sort_direction", "desc");
+
+        if (request("name")) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+        if (request("status")) {
+            $query->where("status", request("status"));
+        }
+
+        $products = $query->orderBy($sortField, $sortDirection)->with('categories')->with('images')
+            ->paginate(10)
+            ->onEachSide(1);
+        $categories = Category::all();
+
         return inertia('Product/Index', [
-          "products" => ProductResource::collection($products)
+            "products" => ProductResource::collection($products),
+            'queryParams' => request()->query() ?: null,
+            'success' => session('success'),
+            'categories' => CategoryResource::collection($categories)
         ]);
     }
 

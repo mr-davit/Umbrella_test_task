@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,5 +21,6 @@ class ProductResource extends JsonResource
         'desc' => $this->desc,
         'price' => $this->price,
         'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-      ];    }
+        'images'=> ImageResource::collection($this->whenLoaded('images')),
+        'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),      ];    }
 }
