@@ -4,8 +4,9 @@ import TextInput from "@/Components/TextInput";
 import {Head, Link, router} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
 import FeaturedImageGallery from "@/Components/Carousel.jsx";
+import {useState} from "react";
 
-export default function Index({auth, products,categories, queryParams = null, success}) {
+export default function Index({auth, products, categories, queryParams = null, success}) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -21,6 +22,26 @@ export default function Index({auth, products,categories, queryParams = null, su
     if (e.key !== "Enter") return;
     searchFieldChanged(name, e.target.value);
   };
+
+  const [selectedItems, setSelectedItems] = useState([])
+
+
+  function checkboxHandler(e) {
+    let isSelected = e.target.checked;
+    let value = parseInt(e.target.value);
+
+    if (isSelected) {
+      setSelectedItems([...selectedItems, value])
+    } else {
+      setSelectedItems((prevData) => {
+        return prevData.filter((id) => {
+          return id !== value
+        })
+      })
+    }
+    searchFieldChanged( 'category' , selectedItems)
+  }
+
 
   const sortChanged = (name) => {
     if (name === queryParams.sort_field) {
@@ -50,43 +71,45 @@ export default function Index({auth, products,categories, queryParams = null, su
     >
       <Head title="products"/>
 
-        <div className=" overflow-x-auto bg-white dark:bg-neutral-700">
+      <div className=" overflow-x-auto bg-white dark:bg-neutral-700">
 
-          <div className="grid grid-cols-5 grid-rows-5 gap-4">
+        <div className="grid grid-cols-5 grid-rows-5 gap-4">
 
-            {categories.data.map((category) => (
+          {categories.data.map((category) => (
 
 
-
-              <div className="inline-flex items-center">
+            <div className="inline-flex items-center">
               <label className="relative flex items-center p-3 rounded-full cursor-pointer" htmlFor="check">
-              <input type="checkbox"
-                     onBlur={(e) =>
-                       searchFieldChanged("search", e.target.value)
-                     }
-                     onKeyPress={(e) => onKeyPress("name", e)}
-              className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
-              id={category.id}
-              key={category.id}
-              />
-              <span
-              className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                <input type="checkbox"
+                       checked={selectedItems.includes(category.id)} value={category.id}
+                       onChange={checkboxHandler}
+
+                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border
+                border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block
+                before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full
+                before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900
+                checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
+                id={category.id}
+                key={category.id}
+                />
+                <span
+                  className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
-              stroke="currentColor" stroke-width="1">
+                   stroke="currentColor" stroke-width="1">
               <path fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"></path>
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"></path>
               </svg>
               </span>
               </label>
               <label className="mt-px font-light text-gray-700 cursor-pointer select-none" htmlFor="check">
                 {category.name}              </label>
-              </div>
-            ))}
-          </div>
-
-
+            </div>
+          ))}
         </div>
+
+
+      </div>
 
 
       <div className="flex justify-end">
@@ -100,7 +123,15 @@ export default function Index({auth, products,categories, queryParams = null, su
           }
           onKeyPress={(e) => onKeyPress("name", e)}
         />
+
+        <Link
+          href={route("product.create")}
+          className="bg-green-500 py-1 px-3 text-white  rounded shadow transition-all hover:bg-emerald-600"
+        >
+          Add new
+        </Link>
       </div>
+
 
 
       <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+    Protected $guarded = ['id'];
 
     public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

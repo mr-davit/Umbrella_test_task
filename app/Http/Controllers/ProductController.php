@@ -8,6 +8,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
+use http\Env\Request;
 
 class ProductController extends Controller
 {
@@ -24,9 +25,12 @@ class ProductController extends Controller
         if (request("name")) {
             $query->where("name", "like", "%" . request("name") . "%");
         }
-        if (request("status")) {
-            $query->where("status", request("status"));
-        }
+
+        if (request("category")) {
+
+            $query->whereHas("categories", function($q) use($request){
+                $q->where('id', '=', $request);})->get();
+            };
 
         $products = $query->orderBy($sortField, $sortDirection)->with('categories')->with('images')
             ->paginate(10)
@@ -46,7 +50,12 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+
+        return inertia('Product/Create', [
+            'categories' => CategoryResource::collection($categories)
+        ]);
+
     }
 
     /**
@@ -54,7 +63,16 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+       $data = $request->validated();
+//       dd($data);
+       $product = Product::create($data);
+        $product->categories()->sync($request->categories);
+            foreach ($data['images'] as $file) {
+//                $path = $file->store('images');
+                $product->images()->create(['path' => $file]);
+            }
+//        'thumbnail' => $request->file('thumbnail')->store('thumbnails'),
+
     }
 
     /**

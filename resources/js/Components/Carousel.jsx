@@ -7,7 +7,7 @@ export default function FeaturedImageGallery({images}) {
  }));
 
  const [active, setActive] = React.useState(
-data[1].imagelink
+data.imagelink
  );
 
  return (
