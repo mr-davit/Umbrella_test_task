@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreProductRequest extends FormRequest
 {
@@ -24,9 +25,10 @@ class StoreProductRequest extends FormRequest
         return [
             "name" => "max:255",
             "desc" => "max:600",
-            "images" => "",
-            "price" => "",
-            "categories" => "array"
+            'images' => 'required',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:12048',
+            "price" => "required|numeric",
+            "categories" => ['required','array', Rule::exists('categories','id')]
         ];
     }
 }

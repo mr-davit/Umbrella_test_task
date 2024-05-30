@@ -1,15 +1,18 @@
 import React from "react";
 
 
-export default function FeaturedImageGallery({images}) {
- const data = images.map(image => ({
-  imagelink: image.path
+export default function FeaturedImageGallery({images_url}) {
+ const data = images_url.map(image => ({
+  imagelink: image
+
  }));
 
- const [active, setActive] = React.useState(
-data.imagelink
- );
 
+  const [active, setActive] = React.useState(
+
+data.imagelink
+
+ );
  return (
   <div className="grid gap-2">
    <div>
@@ -23,6 +26,7 @@ data.imagelink
     {data.map(({ imagelink }, index) => (
      <div key={index}>
       <img
+        onLoad={() => setActive(imagelink)}
        onClick={() => setActive(imagelink)}
        src={imagelink}
        className="h-20 max-w-full cursor-pointer rounded-lg object-cover object-center"

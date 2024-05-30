@@ -9,6 +9,8 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use http\Env\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -28,13 +30,27 @@ class ProductController extends Controller
 
         if (request("category")) {
 
-            $query->whereHas("categories", function($q) use($request){
-                $q->where('id', '=', $request);})->get();
+            $query->whereHas("categories", function($q) use($query){
+                $q->where('id', '=', $query);})->get();
             };
 
         $products = $query->orderBy($sortField, $sortDirection)->with('categories')->with('images')
             ->paginate(10)
             ->onEachSide(1);
+
+//        $products = $products->each(function ($product) {
+//            $product->images_url = $product->images->map(function ($image) {
+//                if (Str::startsWith($image->path, 'images/')) {
+//                    return asset(Storage::url($image->path));
+//                } else {
+//                    return $image->path; // Return the original path if it does not start with "images/"
+//                }
+//            });
+//
+//        });
+
+//        dd($products[0]);
+
         $categories = Category::all();
 
         return inertia('Product/Index', [
@@ -66,15 +82,16 @@ class ProductController extends Controller
        $data = $request->validated();
 //       dd($data);
        $product = Product::create($data);
+//       dd($request->categories);
         $product->categories()->sync($request->categories);
             foreach ($data['images'] as $file) {
-//                $path = $file->store('images');
-                $product->images()->create(['path' => $file]);
+                $path = $file->store('images', 'public');
+                $product->images()->create(['path' => $path]);
             }
-//        'thumbnail' => $request->file('thumbnail')->store('thumbnails'),
+        $product->categories()->sync($request->categories);
+            return redirect(route('product.index'))->with('success','Product was added successfully');
 
     }
-
     /**
      * Display the specified resource.
      */
@@ -104,6 +121,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $name = $product->name;
+        $product->delete();
+        return to_route('product.index')
+            ->with('success', "Product \"$name\" was deleted");
+
     }
 }

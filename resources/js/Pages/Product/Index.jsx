@@ -57,7 +57,7 @@ export default function Index({auth, products, categories, queryParams = null, s
     router.get(route("product.index"), queryParams);
   };
 
-  const deleteProject = (product) => {
+  const deleteProduct = (product) => {
     if (!window.confirm("Are you sure you want to delete the product?")) {
       return;
     }
@@ -71,20 +71,20 @@ export default function Index({auth, products, categories, queryParams = null, s
     >
       <Head title="products"/>
 
-      <div className=" overflow-x-auto bg-white dark:bg-neutral-700">
+      <div className=" dark:bg-gray-800 overflow-x-auto bg-white dark:bg-neutral-700">
 
         <div className="grid grid-cols-5 grid-rows-5 gap-4">
 
           {categories.data.map((category) => (
 
 
-            <div className="inline-flex items-center">
+            <div className="inline-flex  items-center">
               <label className="relative flex items-center p-3 rounded-full cursor-pointer" htmlFor="check">
                 <input type="checkbox"
                        checked={selectedItems.includes(category.id)} value={category.id}
                        onChange={checkboxHandler}
 
-                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border
+                className=" before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border
                 border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block
                 before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full
                 before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900
@@ -102,7 +102,7 @@ export default function Index({auth, products, categories, queryParams = null, s
               </svg>
               </span>
               </label>
-              <label className="mt-px font-light text-gray-700 cursor-pointer select-none" htmlFor="check">
+              <label className="mt-px text-white font-light cursor-pointer select-none" htmlFor="check">
                 {category.name}              </label>
             </div>
           ))}
@@ -110,6 +110,13 @@ export default function Index({auth, products, categories, queryParams = null, s
 
 
       </div>
+      {success &&
+      <div className='w-full py-4 flex justify-center items-center bg-green-500 text-white border border-b-white'>
+        <h2>
+          {success}
+        </h2>
+      </div>
+      }
 
 
       <div className="flex justify-end">
@@ -193,6 +200,7 @@ export default function Index({auth, products, categories, queryParams = null, s
               </thead>
               <tbody>
 
+
               {products.data.map((product) => (
 
                 <tr
@@ -202,7 +210,8 @@ export default function Index({auth, products, categories, queryParams = null, s
                   <td className="px-3 py-2 w-2/4">
                     <div>
                       <FeaturedImageGallery
-                        images={product.images}/>
+                        images_url={product.images_url}/>
+                      {console.log(product.images_url)}
                     </div>
                   </td>
                   <th className="px-3 py-2 text-gray-100 text-nowrap hover:underline">
@@ -244,7 +253,7 @@ export default function Index({auth, products, categories, queryParams = null, s
                       Edit
                     </Link>
                     <button
-                      onClick={(e) => deleteproduct(product)}
+                      onClick={(e) => deleteProduct(product)}
                       className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
                     >
                       Delete
@@ -255,7 +264,7 @@ export default function Index({auth, products, categories, queryParams = null, s
               </tbody>
             </table>
           </div>
-          <Pagination links={products.meta.links}/>
+          {/*<Pagination links={products.meta.links}/>*/}
 
         </div>
       </div>

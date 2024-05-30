@@ -9,18 +9,18 @@ export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex">
-                            <div className="shrink-0 flex items-center">
+        <div className="min-h-screen bg-gray-100 dark: bg-gray-500/75">
+            <nav className=" dark:bg-gray-800 bg-white border-b border-gray-100">
+                <div className=" dark:bg-gray-800 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className=" dark:bg-gray-800 flex justify-between h-16">
+                        <div className=" dark:bg-gray-800 flex">
+                            <div className=" dark:bg-gray-800 shrink-0 flex items-center">
                                 <Link href="/">
                                     <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden  space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
@@ -33,7 +33,7 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                         </div>
 
-                        <div className="hidden sm:flex sm:items-center sm:ms-6">
+                        <div className="hidden dark:bg-gray-800 sm:flex sm:items-center sm:ms-6">
                             <div className="ms-3 relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
@@ -97,8 +97,8 @@ export default function Authenticated({ user, header, children }) {
                 </div>
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                    <div className=" dark:bg-gray-800 pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink className="dark:bg-gray-800" href={route('dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
                     </div>
@@ -120,8 +120,8 @@ export default function Authenticated({ user, header, children }) {
             </nav>
 
             {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
+                <header className="bg-white dark:bg-gray-800 shadow">
+                    <div className="max-w-7xl text-white mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
                 </header>
             )}
 
