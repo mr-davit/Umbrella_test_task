@@ -211,7 +211,6 @@ export default function Index({auth, products, categories, queryParams = null, s
                     <div>
                       <FeaturedImageGallery
                         images_url={product.images_url}/>
-                      {console.log(product.images_url)}
                     </div>
                   </td>
                   <th className="px-3 py-2 text-gray-100 text-nowrap hover:underline">
@@ -221,7 +220,7 @@ export default function Index({auth, products, categories, queryParams = null, s
                   </th>
 
                   <th className="px-3 py-2 text-gray-100 text-nowrap hover:underline">
-                    {product.desc.substr(0, 20) + '...'}
+                    {product.desc.substr(0, 30) + '...'}
                   </th>
 
                   <th className="px-3 py-2 text-gray-100 text-nowrap hover:underline">

@@ -38,18 +38,7 @@ class ProductController extends Controller
             ->paginate(10)
             ->onEachSide(1);
 
-//        $products = $products->each(function ($product) {
-//            $product->images_url = $product->images->map(function ($image) {
-//                if (Str::startsWith($image->path, 'images/')) {
-//                    return asset(Storage::url($image->path));
-//                } else {
-//                    return $image->path; // Return the original path if it does not start with "images/"
-//                }
-//            });
-//
-//        });
 
-//        dd($products[0]);
 
         $categories = Category::all();
 
@@ -97,7 +86,15 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+
+      $product = $product->with('categories')->with('images')->find($product->id);
+
+      return inertia('Product/Show', [
+
+        'product' => new ProductResource($product),
+
+      ]);
+
     }
 
     /**
