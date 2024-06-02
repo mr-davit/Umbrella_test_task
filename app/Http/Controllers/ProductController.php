@@ -8,9 +8,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
-use http\Env\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -78,7 +76,7 @@ class ProductController extends Controller
       $product->images()->create(['path' => $path]);
     }
     $product->categories()->sync($request->categories);
-    return redirect(route('product.index'))->with('success', 'Product was added successfully');
+    return redirect(route('product.index'))->with('success', 'Product ' . $product->name . ' was added successfully');
 
   }
 
@@ -128,11 +126,11 @@ class ProductController extends Controller
 
 
     if (isset($data['images'])) {
-        foreach ($data['images'] as $image) {
-            $path = $product->images()->where('id' , $image)->first();
-            Storage::disk('public')->delete($path->path);
-            $path->delete();
-        }
+      foreach ($data['images'] as $image) {
+        $path = $product->images()->where('id', $image)->first();
+        Storage::disk('public')->delete($path->path);
+        $path->delete();
+      }
     }
     if (isset($data['image_files'])) {
       foreach ($data['image_files'] as $file) {

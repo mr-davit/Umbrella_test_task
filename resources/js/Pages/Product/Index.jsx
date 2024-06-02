@@ -42,6 +42,7 @@ export default function Index({auth, products, categories, queryParams = null, s
     searchFieldChanged( 'category' , selectedItems)
   }
 
+ console.log(success)
 
   const sortChanged = (name) => {
     if (name === queryParams.sort_field) {
