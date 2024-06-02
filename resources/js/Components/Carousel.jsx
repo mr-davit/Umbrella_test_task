@@ -1,9 +1,9 @@
 import React from "react";
 
 
-export default function FeaturedImageGallery({images_url}) {
- const data = images_url.map(image => ({
-  imagelink: image
+export default function FeaturedImageGallery({images}) {
+ const data = images.map(image => ({
+  imagelink: image.path
 
  }));
 

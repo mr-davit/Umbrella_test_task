@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class ProductResource extends JsonResource
 {
+
+
     /**
      * Transform the resource into an array.
      *
@@ -24,8 +26,8 @@ class ProductResource extends JsonResource
         'name' => $this->name,
         'desc' => $this->desc,
         'price' => $this->price,
+        'images' =>  ImageResource::collection($this->whenLoaded('images')),
         'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-//        'images_url'=> ImageResource::collection($this->whenLoaded('images')),
         'images_url'=> ( $this->whenLoaded('images')->map(function ($image) {
 
             if (Str::startsWith($image->path, 'images/')) {
