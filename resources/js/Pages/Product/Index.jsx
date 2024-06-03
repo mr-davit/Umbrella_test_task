@@ -4,9 +4,9 @@ import TextInput from "@/Components/TextInput";
 import {Head, Link, router} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
 import FeaturedImageGallery from "@/Components/Carousel.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
-export default function Index({auth, products, categories, queryParams = null, success}) {
+export default function Index({auth, products, categories, queryParams = null, categoryParam = null, success}) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -18,31 +18,13 @@ export default function Index({auth, products, categories, queryParams = null, s
     router.get(route("product.index"), queryParams);
   };
 
+
+
   const onKeyPress = (name, e) => {
     if (e.key !== "Enter") return;
     searchFieldChanged(name, e.target.value);
   };
 
-  const [selectedItems, setSelectedItems] = useState([])
-
-
-  function checkboxHandler(e) {
-    let isSelected = e.target.checked;
-    let value = parseInt(e.target.value);
-
-    if (isSelected) {
-      setSelectedItems([...selectedItems, value])
-    } else {
-      setSelectedItems((prevData) => {
-        return prevData.filter((id) => {
-          return id !== value
-        })
-      })
-    }
-    searchFieldChanged( 'category' , selectedItems)
-  }
-
- console.log(success)
 
   const sortChanged = (name) => {
     if (name === queryParams.sort_field) {
@@ -58,11 +40,32 @@ export default function Index({auth, products, categories, queryParams = null, s
     router.get(route("product.index"), queryParams);
   };
 
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  const handleCheckboxChange = (e) => {
+    const { checked, value } = e.target;
+    const categoryId = parseInt(value);
+
+    if (checked) {
+      setSelectedCategories([...selectedCategories, categoryId]);
+    } else {
+      setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
+    }
+  };
+
+  const applyFilters = () => {
+    router.get(route('product.index'), { categories: selectedCategories })};
+
+
+
+
   const deleteProduct = (product) => {
     if (!window.confirm("Are you sure you want to delete the product?")) {
       return;
     }
     router.delete(route("product.destroy", product.id));
+
+
   };
   return (
     <AuthenticatedLayout
@@ -82,16 +85,14 @@ export default function Index({auth, products, categories, queryParams = null, s
             <div className="inline-flex  items-center">
               <label className="relative flex items-center p-3 rounded-full cursor-pointer" htmlFor="check">
                 <input type="checkbox"
-                       checked={selectedItems.includes(category.id)} value={category.id}
-                       onChange={checkboxHandler}
-
+                       onChange={handleCheckboxChange}
                 className=" before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border
                 border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block
                 before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full
                 before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900
                 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
-                id={category.id}
                 key={category.id}
+                value={category.id}
                 />
                 <span
                   className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
@@ -107,6 +108,7 @@ export default function Index({auth, products, categories, queryParams = null, s
                 {category.name}              </label>
             </div>
           ))}
+          <button onClick={applyFilters}>Apply Filters</button>
         </div>
 
 

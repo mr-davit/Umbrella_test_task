@@ -8,6 +8,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -15,25 +16,27 @@ class ProductController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
+
     $query = Product::query();
 
     $sortField = request("sort_field", 'id');
     $sortDirection = request("sort_direction", "desc");
 
     if (request("name")) {
-      $query->where("name", "like", "%" . request("name") . "%");
+        $query->where("name", "like", "%" . request("name") . "%");
     }
 
-    if (request("category")) {
+      if ($request->has('categories')) {
+          $categoryIds = $request->input('categories');
+          $query->whereHas('categories', function ($q) use ($categoryIds) {
+              $q->whereIn('category_id', $categoryIds);
+          });
+      }
 
-      $query->whereHas("categories", function ($q) use ($query) {
-        $q->where('id', '=', $query);
-      })->get();
-    };
 
-    $products = $query->orderBy($sortField, $sortDirection)->with('categories')->with('images')
+    $products = $query->with('categories')->with('images')->orderBy($sortField, $sortDirection)
       ->paginate(10)
       ->onEachSide(1);
 
