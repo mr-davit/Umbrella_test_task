@@ -23,6 +23,8 @@ class ImageResource extends JsonResource
         'id' => $this->id,
         'product_id' => $this->product_id,
         'path' =>   Str::startsWith($this->path, 'images/') ? asset(Storage::url($this->path)) : $this->path,
+          // change image path to asset url,Return the original path if it does not start with "images/ ,
+          // scenario for both url and uploaded pictures"
       ];
     }
 

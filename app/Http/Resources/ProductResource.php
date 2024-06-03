@@ -28,13 +28,5 @@ class ProductResource extends JsonResource
         'price' => $this->price,
         'images' =>  ImageResource::collection($this->whenLoaded('images')),
         'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-        'images_url'=> ( $this->whenLoaded('images')->map(function ($image) {
-
-            if (Str::startsWith($image->path, 'images/')) {
-                    return asset(Storage::url($image->path));
-                } else {
-                    return $image->path; // Return the original path if it does not start with "images/"
-                }
-        }) ),
         'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),      ];    }
 }
